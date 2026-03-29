@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netflix UI</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #141414;
+            color: #fff;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .row {
+            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .row-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .row-title {
+            font-size: 1.2vw;
+            font-weight: 700;
+            color: #e5e5e5;
+            margin: 0;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .row-title:hover {
+            color: #fff;
+        }
+
+        .row-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 2px;
+            background-color: #4d4d4d;
+        }
+
+        .dot.active {
+            background-color: #b3b3b3;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+        }
+
+        .cards-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .card {
+            flex: 1 1 0;
+            min-width: 250px;
+            position: relative;
+            background-color: #222;
+            border-radius: 4px;
+            overflow: hidden;
+            aspect-ratio: 16 / 9;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .recently-added {
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #E50914;
+            color: white;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 3px 6px;
+            border-radius: 3px;
+            text-transform: uppercase;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="uygulamaKapsayici" class="container"></div>
+
+    <script>
+        const netflixVerisi = [
+            {
+                kategori: "Çünkü Gupi İzlediniz",
+                filmler: [
+                    { baslik: "Breaking Bad", resim: "img/breakingbad.jpg", yeniEklendi: true },
+                    { baslik: "Dark", resim: "img/dark.jpg", yeniEklendi: false },
+                    { baslik: "Narcos", resim: "img/narcos.jpg", yeniEklendi: false }
+                ]
+            },
+            {
+                kategori: "Kış Uykusu Modu Aktif",
+                filmler: [
+                    { baslik: "Hangover", resim: "img/hangover.jpg", yeniEklendi: false },
+                    { baslik: "Hangover 2", resim: "img/hangover2.jpg", yeniEklendi: false },
+                    { baslik: "Hangover 3", resim: "img/hangover3.jpg", yeniEklendi: false }
+                ]
+            },
+            {
+                kategori: "30 Dakikalık Gülmeceler",
+                filmler: [
+                    { baslik: "Annihilation", resim: "img/annihilation.jpg", yeniEklendi: false },
+                    { baslik: "Project Power", resim: "img/projectpower.jpg", yeniEklendi: false },
+                    { baslik: "The Mother", resim: "img/themother.jpg", yeniEklendi: false }
+                ]
+            },
+            {
+                kategori: "Sadece Netflix'te",
+                filmler: [
+                    { baslik: "Peaky Blinders", resim: "img/peakyblinders.jpg", yeniEklendi: false },
+                    { baslik: "The Society", resim: "img/society.jpg", yeniEklendi: false },
+                    { baslik: "You", resim: "img/you.jpg", yeniEklendi: false }
+                ]
+            },
+            {
+                kategori: "Çünkü The Decameron İzlediniz",
+                filmler: [
+                    { baslik: "Countdown", resim: "img/countdown.jpg", yeniEklendi: true },
+                    { baslik: "Forever", resim: "img/forever.jpg", yeniEklendi: true },
+                    { baslik: "Unfamiliar", resim: "img/unfamiliar.jpg", yeniEklendi: false }
+                ]
+            }
+        ];
+
+        const uygulamaKapsayiciDOM = document.getElementById('uygulamaKapsayici');
+
+        for (let i = 0; i < netflixVerisi.length; i++) {
+            const kategoriVerisi = netflixVerisi[i];
+
+            const satirDivi = document.createElement('div');
+            satirDivi.classList.add('row');
+
+            const baslikDivi = document.createElement('div');
+            baslikDivi.classList.add('row-header');
+
+            const baslikElemani = document.createElement('h2');
+            baslikElemani.classList.add('row-title');
+            baslikElemani.textContent = kategoriVerisi.kategori;
+
+            const noktalarDivi = document.createElement('div');
+            noktalarDivi.classList.add('row-dots');
+
+            for (let d = 0; d < 4; d++) {
+                const nokta = document.createElement('div');
+                nokta.classList.add('dot');
+                if (d === 0) nokta.classList.add('active');
+                noktalarDivi.appendChild(nokta);
+            }
+
+            baslikDivi.appendChild(baslikElemani);
+            baslikDivi.appendChild(noktalarDivi);
+
+            satirDivi.appendChild(baslikDivi);
+
+            const kartlarKapsayicisi = document.createElement('div');
+            kartlarKapsayicisi.classList.add('cards-container');
+
+            for (let j = 0; j < kategoriVerisi.filmler.length; j++) {
+                const film = kategoriVerisi.filmler[j];
+
+                const kartDivi = document.createElement('div');
+                kartDivi.classList.add('card');
+
+                const resimElemani = document.createElement('img');
+                resimElemani.src = film.resim;
+                resimElemani.alt = film.baslik;
+                kartDivi.appendChild(resimElemani);
+
+                if (film.yeniEklendi === true) {
+                    const rozetElemani = document.createElement('div');
+                    rozetElemani.classList.add('recently-added');
+                    rozetElemani.textContent = "Recently Added";
+                    kartDivi.appendChild(rozetElemani);
+                }
+
+                kartlarKapsayicisi.appendChild(kartDivi);
+            }
+
+            satirDivi.appendChild(kartlarKapsayicisi);
+            uygulamaKapsayiciDOM.appendChild(satirDivi);
+        }
+    </script>
+</body>
+
+</html>
